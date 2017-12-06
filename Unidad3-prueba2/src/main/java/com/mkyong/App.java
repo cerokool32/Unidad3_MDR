@@ -1,9 +1,13 @@
 package com.mkyong;
 
-import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.hibernate.Session;
+
+import com.mkyong.stock.Category;
+import com.mkyong.stock.Stock;
 import com.mkyong.util.HibernateUtil;
-import com.mkyong.user.DBUser;
 
 public class App {
 	public static void main(String[] args) {
@@ -11,14 +15,22 @@ public class App {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 
 		session.beginTransaction();
-		DBUser user = new DBUser();
+		
+		Stock stock = new Stock();
+        stock.setStockCode("7052");
+        stock.setStockName("PADINI");
 
-		user.setUserId(100);
-		user.setUsername("superman");
-		user.setCreatedBy("system");
-		user.setCreatedDate(new Date());
+        Category category1 = new Category("CONSUMER", "CONSUMER COMPANY");
+        Category category2 = new Category("INVESTMENT", "INVESTMENT COMPANY");
 
-		session.save(user);
+        Set<Category> categories = new HashSet<Category>();
+        categories.add(category1);
+        categories.add(category2);
+
+        stock.setCategories(categories);
+
+        session.saveOrUpdate(stock);
+		
 		session.getTransaction().commit();
 	}
 }
